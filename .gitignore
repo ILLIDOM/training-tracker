@@ -17,3 +17,5 @@ _mailinglist
 .idea/
 docs/_build/
 .vscode
+
+training.db
