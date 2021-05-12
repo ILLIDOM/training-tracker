@@ -15,3 +15,4 @@ class TrainingSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Training
         sqla_session = db.session
+        load_instance = True

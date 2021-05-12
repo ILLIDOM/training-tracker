@@ -1,11 +1,11 @@
 from flask import (
-    Blueprint, 
-    Flask, 
-    json, 
-    request, 
-    abort
+    Blueprint,
+    Flask,
+    json,
+    request,
+    abort,
+    make_response
 )
-
 from pprint import pprint
 from . import routes
 from config import db
@@ -37,22 +37,39 @@ def read(training_id):
         return (json.dumps(data), 200, {'content-type': 'application/json'})
 
     else:
-        abort(
-            404,
-            "Person with Id: {person_id} not found".format(training_id=training_id),
-        )
+        # abort(
+        #     404,
+        #     "Person with Id: {person_id} not found".format(
+        #         training_id=training_id),
+        # )
+        abort(404)
+
 
 @routes.route("/trainings", methods=["POST"])
-def create(training):
-    # name = training.get("name")
+def create():
+    new_training_json = request.json
+    schema = TrainingSchema()
+    new_training = schema.load(new_training_json, session=db.session)
 
-    # existing_training = (
-    #     Training.query.filter(Training.name == name)
-    #     .one_or_none()
-    # )
+    db.session.add(new_training)
+    db.session.commit()
+
+    data = schema.dump(new_training)
+
+    return (json.dumps(data), 201, {'content-type': 'application/json'})
+
+
+@routes.route("/trainings/<int:training_id>", methods=["PUT"])
+def update(old_training_id, new_training):
     return 1
+
 
 
 @routes.route("/trainings/<int:training_id>", methods=["DELETE"])
 def delete(training_id):
     return 1
+
+
+@routes.errorhandler(404)
+def not_found(error):
+    return make_response(json.jsonify({'error': 'Not found'}), 404)
