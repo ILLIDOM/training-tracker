@@ -7,6 +7,8 @@ from flask import (
     make_response
 )
 from pprint import pprint
+
+from flask.globals import session
 from . import routes
 from config import db
 from model.models import (
@@ -59,10 +61,26 @@ def create():
     return (json.dumps(data), 201, {'content-type': 'application/json'})
 
 
-@routes.route("/trainings/<int:training_id>", methods=["PUT"])
-def update(old_training_id, new_training):
-    return 1
+@routes.route("/trainings/<int:old_training_id>", methods=["PUT"])
+def update(old_training_id):
+    old_training = Training.query.filter(
+        Training.training_id == old_training_id
+    ).one_or_none()
 
+    if old_training is None:
+        abort(404)
+
+    new_training_json = request.json
+    schema = TrainingSchema()
+    new_training = schema.load(new_training_json, session=db.session)
+    new_training.training_id = old_training_id
+    
+    db.session.merge(new_training)
+    db.session.commit()
+
+    data = schema.dump(new_training)
+
+    return (json.dumps(data), 201, {'content-type': 'application/json'})
 
 
 @routes.route("/trainings/<int:training_id>", methods=["DELETE"])
@@ -72,4 +90,4 @@ def delete(training_id):
 
 @routes.errorhandler(404)
 def not_found(error):
-    return make_response(json.jsonify({'error': 'Not found'}), 404)
+    return make_response(json.jsonify({'error': 'Training Not found'}), 404)
