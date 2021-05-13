@@ -39,11 +39,6 @@ def read(training_id):
         return (json.dumps(data), 200, {'content-type': 'application/json'})
 
     else:
-        # abort(
-        #     404,
-        #     "Person with Id: {person_id} not found".format(
-        #         training_id=training_id),
-        # )
         abort(404)
 
 
@@ -74,7 +69,7 @@ def update(old_training_id):
     schema = TrainingSchema()
     new_training = schema.load(new_training_json, session=db.session)
     new_training.training_id = old_training_id
-    
+
     db.session.merge(new_training)
     db.session.commit()
 
@@ -85,7 +80,19 @@ def update(old_training_id):
 
 @routes.route("/trainings/<int:training_id>", methods=["DELETE"])
 def delete(training_id):
-    return 1
+    training = Training.query.filter(
+        Training.training_id == training_id
+    ).one_or_none()
+
+    if training == None:
+        abort(404)
+
+    db.session.delete(training)
+    db.session.commit()
+        
+    return make_response(
+        "Person {training_id} deleted".format(training_id=training_id), 200
+    )
 
 
 @routes.errorhandler(404)
