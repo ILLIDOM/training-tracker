@@ -28,6 +28,25 @@ class Exercice(db.Model):
     timestamp = db.Column(
         db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
+    sets = db.relationship(
+        'Set',
+        backref='exercice',
+        cascade='all, delete, delete-orphan',
+        single_parent=True,
+        order_by = 'asc(Set.number)'
+    )
+
+
+class Set(db.Model):
+    __tablename__ = "set"
+    set_id = db.Column(db.Integer, primary_key=True)
+    exercice_id = db.Column(db.Integer, db.ForeignKey("exercice.exercice_id"))
+    number = db.Column(db.Integer)
+    weight = db.Column(db.Float)
+    reps = db.Column(db.Integer)
+    timestamp = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
 
 
 # Marshmallow Schemas
@@ -56,9 +75,33 @@ class ExerciceSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
         load_instance = True
     training = fields.Nested('ExerciceTrainingSchema', default=None)
+    sets = fields.Nested('ExerciceSetSchema', default=[], many=True)
 
 
 class ExerciceTrainingSchema(ma.SQLAlchemyAutoSchema):
     training_id = fields.Int()
     name = fields.Str()
+    timestamp = fields.Str()
+
+
+class ExerciceSetSchema(ma.SQLAlchemyAutoSchema):
+    set_id = fields.Int()
+    number = fields.Int()
+    weight = fields.Float()
+    reps = fields.Int()
+    timestamp = fields.Str()
+
+
+class SetSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Set
+        sqla_session = db.session
+        include_fk = True
+        load_instance = True
+    exercice = fields.Nested('SetExerciceSchema', default=None)
+
+
+class SetExerciceSchema(ma.SQLAlchemyAutoSchema):
+    exercice_id = fields.Int()
+    exercice_name = fields.Str()
     timestamp = fields.Str()

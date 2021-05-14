@@ -20,6 +20,20 @@ from model.models import (
 
 exercice_api = Blueprint("exercice_api", __name__)
 
+
+@exercice_api.route("/trainings/<int:training_id>/exercices", methods=["GET"])
+def read(training_id):
+    exercice = (
+        Exercice.query.join(Training, Training.training_id == Exercice.training_id)
+        .filter(Training.training_id == training_id)
+        .all()
+    )
+
+    exercice_schema = ExerciceSchema(many=True)
+    result = exercice_schema.dump(exercice)
+    return (json.dumps(result), 200, {'content-type': 'application/json'})
+
+
 @exercice_api.route("/trainings/<int:training_id>/exercices/<int:exercice_id>", methods=["GET"])
 def read_exercice(training_id, exercice_id):
     exercice = (
@@ -58,7 +72,6 @@ def create(training_id):
 
 @exercice_api.route("/trainings/<int:training_id>/exercices/<int:exercice_id>", methods=["DELETE"])
 def delete(training_id, exercice_id):
-
     exercice = (
         Exercice.query.filter(Training.training_id == training_id)
         .filter(Exercice.exercice_id == exercice_id)
