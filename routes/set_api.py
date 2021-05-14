@@ -22,8 +22,8 @@ from model.models import (
 set_api = Blueprint("set_api", __name__)
 
 
-@set_api.route("/trainings/<int:training_id>/exercices/<int:exercice_id>/sets", methods=["GET"])
-def read_all(training_id, exercice_id):
+@set_api.route("/exercices/<int:exercice_id>/sets", methods=["GET"])
+def read_all(exercice_id):
     set = (
         Set.query.join(Exercice, Exercice.exercice_id == Set.exercice_id)
         .filter(Exercice.exercice_id == exercice_id)
@@ -35,8 +35,8 @@ def read_all(training_id, exercice_id):
     return (json.dumps(result), 200, {'content-type': 'application/json'})
 
 
-@set_api.route("/trainings/<int:training_id>/exercices/<int:exercice_id>/sets/<int:set_id>", methods=["GET"])
-def read(training_id, exercice_id, set_id):
+@set_api.route("/exercices/<int:exercice_id>/sets/<int:set_id>", methods=["GET"])
+def read(exercice_id, set_id):
     set = (
         Set.query.join(Exercice, Exercice.exercice_id == Set.exercice_id)
         .filter(Exercice.exercice_id == exercice_id)
@@ -53,8 +53,8 @@ def read(training_id, exercice_id, set_id):
     return (json.dumps(result), 200, {'content-type': 'application/json'})
 
 
-@set_api.route("/trainings/<int:training_id>/exercices/<int:exercice_id>/sets", methods=["POST"])
-def create(training_id, exercice_id):
+@set_api.route("/exercices/<int:exercice_id>/sets", methods=["POST"])
+def create(exercice_id):
     exercice = (
         Exercice.query.filter(Exercice.exercice_id == exercice_id)
         .one_or_none()
@@ -75,11 +75,10 @@ def create(training_id, exercice_id):
     return (json.dumps(data), 200, {'content-type': 'application/json'})
 
 
-@set_api.route("/trainings/<int:training_id>/exercices/<int:exercice_id>/sets/<int:set_id>", methods=["DELETE"])
-def delete(training_id, exercice_id, set_id):
+@set_api.route("/exercices/<int:exercice_id>/sets/<int:set_id>", methods=["DELETE"])
+def delete(exercice_id, set_id):
     set = (
-        Set.query.filter(Training.training_id == training_id, Exercice.exercice_id == exercice_id)
-        .filter(Set.set_id == set_id)
+        Set.query.filter(Set.set_id == set_id)
         .one_or_none()
     )
 
@@ -90,15 +89,14 @@ def delete(training_id, exercice_id, set_id):
     db.session.commit()
 
     return make_response(
-        "Set {id} deleted".format(set_id = set_id), 200
+        "Set {set_id} deleted".format(set_id = set_id), 200
     )
 
 
-@set_api.route("/trainings/<int:training_id>/exercices/<int:exercice_id>/sets/<int:old_set_id>", methods=["PUT"])
-def update(training_id, exercice_id, old_set_id):
+@set_api.route("/exercices/<int:exercice_id>/sets/<int:old_set_id>", methods=["PUT"])
+def update(exercice_id, old_set_id):
     old_set = (
-        Set.query.filter(Training.training_id == training_id, Exercice.exercice_id == exercice_id)
-        .filter(Set.set_id == old_set_id)
+        Set.query.filter(Set.set_id == old_set_id)
         .one_or_none()
     )
 
