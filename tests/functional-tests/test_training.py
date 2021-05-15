@@ -1,8 +1,14 @@
 from src.model.models import Training
 
 
-def test_training_get(test_client):
+def test_training_get(test_client, db):
     response = test_client.get("/trainings")
+
+    trainings = db.session.query(Training).all()
+    
+
+    json_response = response.data
+
     assert response.status_code == 200
 
 

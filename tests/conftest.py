@@ -33,4 +33,10 @@ def db(app):
     return _db
 
 
+@pytest.fixture(scope="function")
+def session(db):
+    db.session.begin_nested()
 
+    yield db.session
+
+    db.session.rollback()

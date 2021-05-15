@@ -18,5 +18,6 @@ _mailinglist
 docs/_build/
 .vscode
 .coverage
+.pytest_cache
 
 training.db
