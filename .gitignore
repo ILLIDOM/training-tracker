@@ -17,5 +17,6 @@ _mailinglist
 .idea/
 docs/_build/
 .vscode
+.coverage
 
 training.db
