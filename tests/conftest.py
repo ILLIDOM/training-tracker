@@ -1,6 +1,7 @@
 import pytest
 from src import create_app
-
+from src import db as _db
+from setup_test_db import init_db
 
 @pytest.fixture(scope="module")
 def test_client():
@@ -9,3 +10,27 @@ def test_client():
     with flask_app.test_client() as test_client:
         with flask_app.app_context():
             yield test_client
+
+
+############
+# FOR DB TESTING
+############
+
+@pytest.fixture()
+def app():
+    _app = create_app("flask_test.cfg")
+
+    with _app.app_context():
+        yield _app
+
+@pytest.fixture(scope="function")
+def db(app):
+    _db.drop_all()
+    _db.create_all()
+
+    init_db(_db)
+
+    return _db
+
+
+

@@ -4,17 +4,19 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 def main():
-    database = os.path.join(basedir, "training.db")
+    database = os.path.join(basedir, "training_test.db")
     conn = sqlite3.connect(database)
 
     with conn:
         cur = conn.cursor()
-        cur.execute("SELECT * FROM 'set'")
+        cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
 
-        rows = cur.fetchall()
+        print(cur.fetchall())
 
-        for row in rows:
-                print(row)
+        # rows = cur.fetchall()
+
+        # for row in rows:
+        #         print(row)
 
 if __name__ == '__main__':
     main()
