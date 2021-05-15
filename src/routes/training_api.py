@@ -8,10 +8,9 @@ from flask import (
 )
 
 from flask.globals import session
-# from . import routes
-from config import db
+from src import db
 
-from model.models import (
+from src.model.models import (
     Training,
     TrainingSchema,
     Exercice

@@ -1,7 +1,10 @@
 import os
-from config import db
-from model.models import Training, Exercice, Set
+from src import db
+from src.model.models import Training, Exercice, Set
+from src import create_app
 
+app = create_app("flask.cfg")
+app.app_context().push()
 
 TRAINING = [
     {

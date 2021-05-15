@@ -1,11 +1,13 @@
 from datetime import datetime
 
 from sqlalchemy.orm import backref
-from config import db, ma
+from src import db, ma
 from marshmallow import fields
 
 class Training(db.Model):
+
     __tablename__ = "training"
+
     training_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32))
     timestamp = db.Column(
@@ -21,7 +23,9 @@ class Training(db.Model):
 
 
 class Exercice(db.Model):
+
     __tablename__ = "exercice"
+
     exercice_id = db.Column(db.Integer, primary_key=True)
     training_id = db.Column(db.Integer, db.ForeignKey("training.training_id"))
     exercice_name = db.Column(db.String(32))
@@ -38,7 +42,9 @@ class Exercice(db.Model):
 
 
 class Set(db.Model):
+
     __tablename__ = "set"
+    
     set_id = db.Column(db.Integer, primary_key=True)
     exercice_id = db.Column(db.Integer, db.ForeignKey("exercice.exercice_id"))
     number = db.Column(db.Integer)
