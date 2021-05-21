@@ -30,7 +30,6 @@ def create_app(config_filename=None):
 #### Helper Functions ####
 ##########################
 
-
 def initialize_extensions(app):
     db.init_app(app)
     ma.init_app(app)

@@ -3,7 +3,7 @@ from src import create_app
 from src import db as _db
 from setup_test_db import init_db
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def test_client():
     flask_app = create_app("flask_test.cfg")
 
@@ -12,16 +12,19 @@ def test_client():
             yield test_client
 
 
+
+
 ############
 # FOR DB TESTING
 ############
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def app():
     _app = create_app("flask_test.cfg")
 
     with _app.app_context():
         yield _app
+
 
 @pytest.fixture(scope="function")
 def db(app):
