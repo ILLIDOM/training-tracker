@@ -7,11 +7,13 @@ from setup_test_db import init_db
 def test_client():
     flask_app = create_app("flask_test.cfg")
 
+
     with flask_app.test_client() as test_client:
         with flask_app.app_context():
+            _db.drop_all()
+            _db.create_all()
+            init_db(_db)
             yield test_client
-
-
 
 
 ############

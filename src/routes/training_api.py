@@ -75,6 +75,10 @@ def update(old_training_id):
     db.session.merge(new_training)
     db.session.commit()
 
+    new_training = Training.query.filter(
+        Training.training_id == old_training_id
+    ).one_or_none()
+
     data = schema.dump(new_training)
 
     return (json.dumps(data), 201, {'content-type': 'application/json'})
