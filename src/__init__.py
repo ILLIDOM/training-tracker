@@ -36,10 +36,10 @@ def initialize_extensions(app):
 
 
 def register_blueprints(app):
-    from src.routes.training_api import training_api
     from src.routes.exercice_api import exercice_api
-    from src.routes.set_api import set_api
     from src.routes.index import routes
+    from src.routes.set_api import set_api
+    from src.routes.training_api import training_api
 
     app.register_blueprint(training_api)
     app.register_blueprint(exercice_api)
